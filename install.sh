@@ -15,7 +15,7 @@ what_kind_of_boot()
 
 boot=what_kind_of_boot
 
-if [ boot -eq 1 ]
+if [ $boot -eq 1 ]
 then
 	echo "C'est parti pour l'efi !"
 else
