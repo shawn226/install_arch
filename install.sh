@@ -59,11 +59,7 @@ set_time_by_timezone(){
 make_partition(){
 	echo ""
 	echo "Début du partitionnement:"
-	pacman -S --coconfirm parted
-	parted --script /dev/sda
-	mklabel gpt \
-	mkpart primary ext4 1MiB 65 MIB \
-	mkpart primary ext4 65MiB 134MB
+	(echo o; echo n; echo p; echo 1; echo ""; echo +64M; echo n; echo p; echo 2; echo ""; echo ""; echo w; echo q) | fdisk /dev/$(echo $Output_Device)
 	echo ""
 	echo "Paritionnnement terminé."
 }
