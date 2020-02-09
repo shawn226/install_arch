@@ -66,10 +66,12 @@ make_partition(){
 		(echo g; echo n; echo 1; echo ""; echo +1G; echo n; echo 3; echo ""; echo +2G; echo n; echo 2; echo ""; echo ""; echo t; echo 1;echo 1;echo t; echo 2; echo 24; echo t; echo 3; echo 19; echo w) | fdisk /dev/sda
 		echo ""
 	fi
-	mkfs.fat -F32 /dev/sda1
+	mkfs.fat -F32 /dev/sda1 # parition de boot en fat32
+	
+	# création du swap
 	mkswap /dev/sda3
 	swapon /dev/sda3
-	lsblk
+	
 	echo "Paritionnnement terminé."
 }
 
@@ -81,8 +83,8 @@ encrypt_partition(){
 	
 	if [[ $answer = "yes" ]]
 	then
-		(echo YES;) | cryptsetup /dev/sda2
-		
+		(echo YES;) | cryptsetup luksFormat /dev/sda2
+	fi
 }
 
 # define what is the boot => can change settings 
