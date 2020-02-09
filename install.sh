@@ -140,18 +140,19 @@ generate_localegen(){
 	then
 		
 		answer="fr_FR.UTF-8"
-		sed -i 's/^#fr_FR.UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
+		arch-chroot /mnt sed -i 's/^#fr_FR.UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
 	else
 		answer="en_US.UTF-8"
-		sed -i's/^#en_US.UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+		arch-chroot /mnt sed -i's/^#en_US.UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 	fi
 	read -p "Mettre le clavier en AZERTY ? (oui /non)" keymap
 	if [[ $keymap = "oui" ]]
 	then
-		echo "KEYMAP=$keymap" > /etc/vconsole.conf #on met le clavier en azerty
+		arch-chroot /mnt echo "KEYMAP=$keymap" > /etc/vconsole.conf #on met le clavier en azerty
 	fi
 	locale-gen
-	echo "LANG=$answer" > /etc/locale.conf
+	arch-chroot /mnt echo "LANG=$answer" > /etc/locale.conf
+	exit
 }
 
 
@@ -180,19 +181,18 @@ set_mirrors
 
 #On passe au Chroot
 pacstrap /mnt base linux linux-firmware vim sudo dhcpcd
-arch-chroot /mnt << EOC
-
 
 #On set à nouveau la timezone dans le chroot
-ln -sf /usr/share/zoneinfo/$continent/$city /etc/localtime
-hwclock --systohc
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/$continent/$city /etc/localtime
+arch-chroot /mnt hwclock --systohc
 
 #On génère les différentes langues du systeme
+exit
 generate_localegen
 
+echo "Tout est bien là"
 
 
 
 
-EOC
 
