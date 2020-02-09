@@ -57,7 +57,9 @@ set_time_by_timezone(){
 }
 
 make_partition(){
-	sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << end | fdisk
+	echo ""
+	echo "Début du partitionnement:"
+	sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' < EOF | fdisk
 	o # clear the in memory partition table
 	n # new partition
 	p # primary partition
@@ -75,6 +77,8 @@ make_partition(){
 	w # write the partition table
 	q # and we're done
 	EOF
+	echo ""
+	echo "Paritionnnement terminé."
 }
 
 # define what is the boot => can change settings 
