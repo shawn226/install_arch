@@ -19,8 +19,9 @@ what_kind_of_boot()
     fi
 }
 
+#Fonction qui permet de définir l'heure et la date
 set_time_by_timezone(){
-	answer="no"
+	local answer="no"
 	
 	while [[ -z $answer ]] || [[ $answer != "oui" ]]
 	do
@@ -32,7 +33,7 @@ set_time_by_timezone(){
 		# On handle les erreurs haha lol =)
 		while [[ -z $error ]] || [[ $error = 1 ]] 
 		do
-			error=1
+			local error=1
 			read -p "Indiquez votre continent : " continent
 			
 			ls /usr/share/zoneinfo/$continent 2> /dev/null && error=0
@@ -42,7 +43,7 @@ set_time_by_timezone(){
 		
 		while [[ -z $error ]] || [[ $error = 1 ]]
 		do
-			error=1
+			local error=1
 			read -p "Indiquez votre ville : " city
 			ls /usr/share/zoneinfo/$continent/$city 2> /dev/null && error=0
 		done
@@ -56,13 +57,32 @@ set_time_by_timezone(){
 	done
 }
 
+#Fonction qui permet de partitionnner les disques
 make_partition(){
 	echo ""
 	echo "Début du partitionnement:"
-	(echo g; echo n; echo 1; echo ""; echo +1G; echo n; echo 2; echo ""; echo ""; echo t; echo 1;echo 1;echo t; echo 2; echo 24; echo w) | fdisk /dev/sda
-	echo ""
+	if [[ $efi = 1 ]]
+	then
+		(echo g; echo n; echo 1; echo ""; echo +1G; echo n; echo 3; echo ""; echo +2G; echo n; echo 2; echo ""; echo ""; echo t; echo 1;echo 1;echo t; echo 2; echo 24; echo t; echo 3; echo 19; echo w) | fdisk /dev/sda
+		echo ""
+	fi
+	mkfs.fat -F32 /dev/sda1
+	mkswap /dev/sda3
+	swapon /dev/sda3
 	lsblk
 	echo "Paritionnnement terminé."
+}
+
+
+encrypt_partition(){
+	echo ""
+	local answer = ""
+	read -p "Voulez-vous chiffrer la partition ? (oui / non) : " answer
+	
+	if [[ $answer = "yes" ]]
+	then
+		(echo YES;) | cryptsetup /dev/sda2
+		
 }
 
 # define what is the boot => can change settings 
@@ -72,13 +92,16 @@ efi=$? # efi is set to 1 if it's true
 sleep 1 # Sleep for making the script smoother 
 
 #define timezone
-#set_time_by_timezone
+set_time_by_timezone
 
 #Configure Pacman
 pacman -Sy
 
 #Partition making
 make_partition
+
+#Encrypt the partition
+
 
 
 
