@@ -140,10 +140,10 @@ generate_localegen(){
 	then
 		echo "KEYMAP=$answer" > /etc/vconsole.conf #on met le clavier en azerty si fr
 		answer="fr_FR.UTF-8"
-		sed -re 's/^#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
+		sed -ren 's/^#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
 	else
 		answer="en_US.UTF-8"
-		sed -re 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+		sed -ren 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 	fi
 	
 	echo "LANG=$answer" > /etc/locale.conf
@@ -174,6 +174,7 @@ make_mount
 set_mirrors
 
 #On passe au Chroot
+pacstrap /mnt base linux linux-firmware
 arch-chroot /mnt
 
 
