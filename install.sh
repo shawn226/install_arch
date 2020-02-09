@@ -13,9 +13,10 @@ what_kind_of_boot()
     fi
 }
 
-boot=what_kind_of_boot
+what_kind_of_boot
+efi = $?
 
-if [ $boot -eq 1 ]
+if [[ $efi -eq 1 ]]
 then
 	echo "C'est parti pour l'efi !"
 else
