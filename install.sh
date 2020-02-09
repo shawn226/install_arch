@@ -179,8 +179,8 @@ make_mount
 set_mirrors
 
 #On passe au Chroot
-pacstrap /mnt base linux linux-firmware
-arch-chroot /mnt
+pacstrap /mnt base linux linux-firmware vim sudo dhcpcd
+arch-chroot /mnt << EOC
 
 
 #On set à nouveau la timezone dans le chroot
@@ -194,5 +194,5 @@ generate_localegen
 
 
 
-
+EOC
 
