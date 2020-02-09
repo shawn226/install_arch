@@ -59,6 +59,7 @@ set_time_by_timezone(){
 make_partition(){
 	echo ""
 	echo "Début du partitionnement:"
+	pacman -S --coconfirm parted
 	parted --script /dev/sda
 	mklabel gpt \
 	mkpart primary ext4 1MiB 65 MIB \
@@ -76,6 +77,8 @@ sleep 1 # Sleep for making the script smoother
 #define timezone
 #set_time_by_timezone
 
+#Configure Pacman
+pacman -Sy
 
 #Partition making
 make_partition
