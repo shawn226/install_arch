@@ -138,15 +138,19 @@ generate_localegen(){
 	
 	if [[ $answer = "fr" ]]
 	then
-		echo "KEYMAP=$answer" > /etc/vconsole.conf #on met le clavier en azerty si fr
+		
 		answer="fr_FR.UTF-8"
 		sed -i 's/^#fr_FR.UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
 	else
 		answer="en_US.UTF-8"
 		sed -i's/^#en_US.UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 	fi
+	read -p "Mettre le clavier en AZERTY ? (oui /non)" keymap
+	if [[ $keymap = "oui" ]]
+	then
+		echo "KEYMAP=$keymap" > /etc/vconsole.conf #on met le clavier en azerty
+	fi
 	locale-gen
-	
 	echo "LANG=$answer" > /etc/locale.conf
 }
 
