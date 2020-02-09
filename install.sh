@@ -35,14 +35,23 @@ set_time_by_timezone(){
 			error=1
 			read -p "Indiquez votre continent : " continent
 			
-			ls /usr/share/zoneinfo/$continent 2> /dev/null && echo $message_wrong_timezone && error=0
+			ls /usr/share/zoneinfo/$continent 2> /dev/null && error=0
+			
+			if [[ $error = 1 ]]
+			then
+				echo $message_wrong_timezone
+			fi
 		done
 		
 		while [[ -z $error ]] || [[ $error = 1 ]]
 		do
 			error=1
 			read -p "Indiquez votre ville : " city
-			ls /usr/share/zoneinfo/$continent/$city 2> /dev/null && echo $message_wrong_timezone && error=0
+			ls /usr/share/zoneinfo/$continent/$city 2> /dev/null && error=0
+			if [[ $error = 1 ]]
+			then
+				echo $message_wrong_timezone
+			fi
 		done
 
 		timedatectl set-timezone $continent/$city
