@@ -84,7 +84,7 @@ encrypt_partition(){
 	then
 		echo ""
 		read -p "Votre mot de passe : " password
-		echo $password | cryptsetup -q luksFormat /dev/sda2
+		echo "$password" | cryptsetup -q luksFormat /dev/sda2
 		
 	fi
 }
