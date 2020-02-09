@@ -59,7 +59,7 @@ set_time_by_timezone(){
 make_partition(){
 	echo ""
 	echo "Début du partitionnement:"
-	(echo g; echo n; echo 1; echo ""; echo +1G; echo n; echo 2; echo ""; echo ""; echo t; echo 1;echo 1;echo t; echo 2; echo 24) | fdisk /dev/sda
+	(echo g; echo n; echo 1; echo ""; echo +1G; echo n; echo 2; echo ""; echo ""; echo t; echo 1;echo 1;echo t; echo 2; echo 24; echo w) | fdisk /dev/sda
 	echo ""
 	lsblk
 	echo "Paritionnnement terminé."
