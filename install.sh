@@ -3,6 +3,9 @@
 echo "Bienvenue dans le quide d'installation d'Arch Linux.\n"
 echo "Veuillez suivre les instructions à l'écran."
 
+###VARIABLES GLOBALES
+message_wrong_timezone="\nVeuillez indiquer un nom présent dans la liste."
+
 ###FONCTIONS
 
 #Fonction qui permet de récupérer le mode de boot
@@ -26,15 +29,21 @@ set_time_by_timezone(){
 		
 		echo ""
 		ls /usr/share/zoneinfo
+		# On handle les erreurs haha lol =)
 		while [[ -z $error ]] || [[ $error = 1 ]] 
 		do
 			error=1
 			read -p "Indiquez votre continent : " continent
 			
-			ls /usr/share/zoneinfo/$continent && error=0
+			ls /usr/share/zoneinfo/$continent 2> /dev/null && echo $message_wrong_timezone && error=0
 		done
 		
-		read -p "Indiquez votre ville : " city
+		while [[ -z $error ]] || [[ $error = 1 ]]
+		do
+			error=1
+			read -p "Indiquez votre ville : " city
+			ls /usr/share/zoneinfo/$continent/$city 2> /dev/null && echo $message_wrong_timezone && error=0
+		done
 
 		timedatectl set-timezone $continent/$city
 		
