@@ -78,12 +78,14 @@ make_partition(){
 
 encrypt_partition(){
 	echo ""
-	local answer=""
 	read -p "Voulez-vous chiffrer la partition ? (oui / non) : " answer
 	
 	if [[ $answer = "oui" ]]
 	then
-		(echo YES) | cryptsetup luksFormat /dev/sda2
+		echo ""
+		read -p "Votre mot de passe : " password
+		(echo YES; echo $password; echo $password) | cryptsetup -v luksFormat /dev/sda2
+		
 	fi
 }
 
@@ -103,6 +105,7 @@ pacman -Sy
 make_partition
 
 #Encrypt the partition
+encrypt_partition
 
 
 
