@@ -26,9 +26,12 @@ set_time_by_timezone(){
 		
 		echo ""
 		ls /usr/share/zoneinfo
-		while [[ -z $continent]] || [[ ls /usr/share/zoneinfo/ | grep $continent != "" ]]
+		while [[ -z $error ]] || [[ $error = 1 ]] 
 		do
+			error=1
 			read -p "Indiquez votre continent : " continent
+			
+			ls /usr/share/zoneinfo/$continent && error=0
 		done
 		
 		read -p "Indiquez votre ville : " city
