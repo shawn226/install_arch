@@ -19,23 +19,26 @@ what_kind_of_boot()
 set_time_by_timezone(){
 	answer="no"
 	
-	while [[ -z $answer ]] || [[ $answer -!= "oui" ]]
+	while [[ -z $answer ]] || [[ $answer != "oui" ]]
 	do
 		#set the date set-ntp
 		timedatectl set-ntp true
 		
-		echo "\n"
-		read -p "Indiquez votre continent : " continent
+		echo ""
+		ls /usr/share/zoneinfo
+		while [[ -z $continent]] || [[ ls /usr/share/zoneinfo/ | grep $continent != "" ]]
+		do
+			read -p "Indiquez votre continent : " continent
+		done
+		
 		read -p "Indiquez votre ville : " city
 
 		timedatectl set-timezone $continent/$city
 		
 		timedatectl status
 		
-		echo "\n"
+		echo ""
 		read -p "Est-ce correct ? (oui / non): " answer
-		
-		echo $answer
 	done
 }
 
