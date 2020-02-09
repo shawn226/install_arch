@@ -84,7 +84,7 @@ encrypt_partition(){
 	then
 		echo ""
 		read -p "Votre mot de passe : " password
-		(echo YES; echo $password; echo $password) | cryptsetup -v luksFormat /dev/sda2
+		echo $password | cryptsetup -q luksFormat /dev/sda2
 		
 	fi
 }
@@ -99,7 +99,7 @@ sleep 1 # Sleep for making the script smoother
 set_time_by_timezone
 
 #Configure Pacman
-pacman -Sy
+# pacman -Sy
 
 #Partition making
 make_partition
