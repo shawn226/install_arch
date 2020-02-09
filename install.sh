@@ -37,7 +37,7 @@ set_time_by_timezone(){
 
 # define what is the boot => can change settings 
 what_kind_of_boot
-efi = $? # efi is set to 1 if it's true
+efi=$? # efi is set to 1 if it's true
 
 sleep(2)
 set_time_by_timezone
