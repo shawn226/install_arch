@@ -75,7 +75,7 @@ make_partition(){
 	echo "Paritionnnement terminé."
 }
 
-
+#Fonction qui permet de chiffrer la partition /
 encrypt_partition(){
 	echo ""
 	read -p "Voulez-vous chiffrer la partition ? (oui / non) : " answer
@@ -85,15 +85,42 @@ encrypt_partition(){
 		echo ""
 		read -p "Votre mot de passe : " password
 		echo "$password" | cryptsetup -q luksFormat /dev/sda2
-		
+		echo "$password" | cryptsetup open /dev/sda2 cryptroot
+		mkfs -t ext4 /dev/mapper/cryptroot
+		echo ""
+		echo "Fin du chiffrement da la partition"
+		return 1
+	else
+		mkfs -t ext4 /dev/sda2
+		return 0
 	fi
 }
+
+#Fonction qui permet de monter les partitions
+make_mount(){
+	if [[ $efi = 1 ]]
+	then
+		if [[ $encrypted = 1 ]]
+		then
+			mount /dev/mapper/cryptroot /mnt
+		else
+			mount /dev/sda2 /mnt
+		fi
+		mkdir /mnt/boot
+		mount /dev/sda1 /mnt/boot
+	fi
+}
+
+#Fonction qui permet de créer une liste des "mirrors" en fonction du pays, ici c'est FR
+set_mirrors(){
+	curl -s "https://www.archlinux.org/mirrorlist/?country=FR&protocol=https&use_mirror_status=on" > /etc/pacman.d/mirrorlist
+	sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist #On decommente les lignes dans le fichier 
+}
+
 
 # define what is the boot => can change settings 
 what_kind_of_boot
 efi=$? # efi is set to 1 if it's true
-
-sleep 1 # Sleep for making the script smoother 
 
 #define timezone
 set_time_by_timezone
@@ -106,6 +133,14 @@ make_partition
 
 #Encrypt the partition
 encrypt_partition
+encrypted=$?
+
+#make mount
+make_mount
+
+#Set mirrorlist
+set_mirrors
+
 
 
 
