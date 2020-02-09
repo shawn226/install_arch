@@ -109,12 +109,44 @@ make_mount(){
 		mkdir /mnt/boot
 		mount /dev/sda1 /mnt/boot
 	fi
+	echo ""
+	echo"Montage effectué:"
+	lsblk
+	sleep 2
+	genfstab -U /mnt >> /mnt/etc/fstab
 }
 
 #Fonction qui permet de créer une liste des "mirrors" en fonction du pays, ici c'est FR
 set_mirrors(){
 	curl -s "https://www.archlinux.org/mirrorlist/?country=FR&protocol=https&use_mirror_status=on" > /etc/pacman.d/mirrorlist
 	sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist #On decommente les lignes dans le fichier 
+}
+
+generate_localegen(){
+	echo ""
+	while [[ -z $answer ]] || [[ $error = 1 ]]
+	do
+		read -p "Choisissez un langgage (fr / en): " answer
+		if [[ $answer != "fr" ]] && [[ $answer != "en" ]]
+		then
+			echo "Veuillez choisir entre 'fr' et 'en'."
+			error=1
+		else
+			error=0
+		fi
+	done
+	
+	if [[ $answer = "fr" ]]
+	then
+		echo "KEYMAP=$answer" > /etc/vconsole.conf #on met le clavier en azerty si fr
+		answer="fr_FR.UTF-8"
+		sed -re 's/^#fr_FR.UTF-8/fr_FR.UTF-8/' /etc/locale.gen
+	else
+		answer="en_US.UTF-8"
+		sed -re 's/^#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
+	fi
+	
+	echo "LANG=$answer" > /etc/locale.conf
 }
 
 
@@ -140,6 +172,18 @@ make_mount
 
 #Set mirrorlist
 set_mirrors
+
+#On passe au Chroot
+arch-chroot /mnt
+
+
+#On set à nouveau la timezone dans le chroot
+ln -sf /usr/share/zoneinfo/$continent/$city /etc/localtime
+hwclock --systohc
+
+#On génère les différentes langues du systeme
+generate_localegen
+
 
 
 
