@@ -140,19 +140,80 @@ generate_localegen(){
 	then
 		
 		answer="fr_FR.UTF-8"
-		arch-chroot /mnt sed -i 's/^#fr_FR.UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
+		sed -i 's/^#fr_FR.UTF-8/fr_FR.UTF-8 UTF-8/' /mnt/etc/locale.gen
 	else
 		answer="en_US.UTF-8"
-		arch-chroot /mnt sed -i's/^#en_US.UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+		sed -i's/^#en_US.UTF-8/en_US.UTF-8 UTF-8/' /mnt/etc/locale.gen
 	fi
 	read -p "Mettre le clavier en AZERTY ? (oui /non)" keymap
 	if [[ $keymap = "oui" ]]
 	then
-		arch-chroot /mnt echo "KEYMAP=$keymap" > /etc/vconsole.conf #on met le clavier en azerty
+		echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf #on met le clavier en azerty
 	fi
 	locale-gen
-	arch-chroot /mnt echo "LANG=$answer" > /etc/locale.conf
-	exit
+	echo "LANG=$answer" > /mnt/etc/locale.conf
+}
+
+def_hosts(){
+	echo ""
+	read -p "Choissiez un nom pour la nouvelle machine : " name
+	
+	echo $name > /mnt/etc/hostname
+	
+	echo "127.0.0.1	localhost
+		::1	localhost
+		127.0.1.1	$name.localdomain	$name" > /mnt/etc/hosts
+}
+
+make_initramfs(){
+	if [ $encrypted = 1 ]
+	then
+		sed -i 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck)/' /mnt/etc/mkinitcpio.conf
+		echo "" >> /mnt/install.sh
+		echo "mkinitcpio -P" >> /mnt/install.sh
+	fi
+}
+
+config_root(){
+	echo ""
+	while [ -z $error_pwd ] || [ $error_pwd = 1 ]
+	do
+		read -p "Choisir le mot de passe pour root : " root_pwd
+		read -p "Confirmez le mot de passe : " confirm
+		if [[ root_pwd != confirm ]]
+		then
+			error_pwd=1
+		else
+			error_pwd=0
+		fi
+	done
+	
+	echo "" >> /mnt/install.sh
+	echo "(echo $root_pwd; echo $root_pwd) | passwd" >> /mnt/install.sh
+}
+
+config_user(){
+	echo ""
+	read -p "Choissez un nom pour le nouvel utilisateur : " username
+	
+	while [ -z $error_pwd ] || [ $error_pwd = 1 ]
+	do
+		read -p "Choisir le mot de passe pour root : " user_pwd
+		read -p "Confirmez le mot de passe : " confirm
+		if [[ user_pwd != confirm ]]
+		then
+			error_pwd=1
+		else
+			error_pwd=0
+		fi
+	done
+	echo "" >> /mnt/install.sh
+	echo "useradd -m $username" >> /mnt/install.sh
+	echo "" >> /mnt/install.sh
+	echo "(echo $root_pwd; echo $root_pwd) | passwd $username" >> /mnt/install.sh
+	echo "" >> /mnt/install.sh
+	echo "usermod -aG wheel,audio,video,optical,storage $username" >> /mnt/install.sh
+	
 }
 
 
@@ -183,12 +244,28 @@ set_mirrors
 pacstrap /mnt base linux linux-firmware vim sudo dhcpcd
 
 #On set à nouveau la timezone dans le chroot
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/$continent/$city /etc/localtime
-arch-chroot /mnt hwclock --systohc
+
+echo "ln -sf /usr/share/zoneinfo/$continent/$city /etc/localtime
+	
+	hwclock --systohc" >> /mnt/install.sh
 
 #On génère les différentes langues du systeme
-exit
 generate_localegen
+
+#On def les hosts
+def_hosts
+
+#On configure les initramfs
+make_initramfs
+
+config_root
+
+config_user
+
+chmod u+x /mnt/install.sh
+
+arch-chroot /mnt ./install.sh
+
 
 echo "Tout est bien là"
 
