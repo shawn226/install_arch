@@ -180,7 +180,7 @@ config_root(){
 	do
 		read -p "Choisir le mot de passe pour root : " root_pwd
 		read -p "Confirmez le mot de passe : " confirm
-		if [[ root_pwd != confirm ]]
+		if [[ $root_pwd != $confirm ]]
 		then
 			error_pwd=1
 		else
@@ -200,7 +200,7 @@ config_user(){
 	do
 		read -p "Choisir le mot de passe pour root : " user_pwd
 		read -p "Confirmez le mot de passe : " confirm
-		if [[ user_pwd != confirm ]]
+		if [[ $user_pwd != $confirm ]]
 		then
 			error_pwd=1
 		else
