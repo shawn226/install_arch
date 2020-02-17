@@ -151,7 +151,8 @@ generate_localegen(){
 		echo "KEYMAP=fr" > /mnt/etc/vconsole.conf #on met le clavier en azerty
 	fi
 	echo "" >> /mnt/install.sh
-	echo "locale-gen" >> /mnt/install.sh
+	echo "locale-gen
+sleep 2" >> /mnt/install.sh
 	echo "LANG=$answer" > /mnt/etc/locale.conf
 }
 
@@ -227,14 +228,14 @@ echo 'default arch
 timeout 5
 console-mode keep
 editor no
-' > /mnt/boot/loader/loader.conf
+' > /boot/loader/loader.conf
 	
 	
 echo 'title	Arch Linux
 linux	/vmlinuz-linux
 initrd	/initramfs-linux.img
 options cryptdevice=UUID=$encrypt_uuid:cryptroot root=/dev/mapper/cryptroot rw quiet
-' > /mnt/boot/entries/arch.conf
+' > /boot/entries/arch.conf
 bootctl --path=/boot update" >> /mnt/install.sh
 	
 }
