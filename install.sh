@@ -228,13 +228,14 @@ echo 'default arch
 timeout 5
 console-mode keep
 editor no
-' > /boot/loader/loader.conf ">> /mnt/install.sh
-	echo "" >> /mnt/install.sh
-	echo "echo 'title	Arch Linux
+' > /boot/loader/loader.conf
+
+echo 'title	Arch Linux
 linux	/vmlinuz-linux
 initrd	/initramfs-linux.img
 options cryptdevice=UUID=$encrypt_uuid:cryptroot root=/dev/mapper/cryptroot rw quiet
-' > /boot/entries/arch.conf
+' > /boot/loader/entries/arch.conf
+
 bootctl --path=/boot update" >> /mnt/install.sh
 	
 }
@@ -292,9 +293,9 @@ chmod u+x /mnt/install.sh
 
 arch-chroot /mnt ./install.sh
 
-# umount -R /mnt
+umount -R /mnt
 
-# shutdown now
+shutdown now
 
 
 
