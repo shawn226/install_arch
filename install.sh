@@ -228,10 +228,9 @@ echo 'default arch
 timeout 5
 console-mode keep
 editor no
-' > /boot/loader/loader.conf
-	
-	
-echo 'title	Arch Linux
+' > /boot/loader/loader.conf ">> /mnt/install.sh
+	echo "" >> /mnt/install.sh
+	echo "echo 'title	Arch Linux
 linux	/vmlinuz-linux
 initrd	/initramfs-linux.img
 options cryptdevice=UUID=$encrypt_uuid:cryptroot root=/dev/mapper/cryptroot rw quiet
