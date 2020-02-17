@@ -170,7 +170,7 @@ def_hosts(){
 make_initramfs(){
 	if [ $encrypted = 1 ]
 	then
-		sed -i 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck)/' /mnt/etc/mkinitcpio.conf
+		sed -i 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck)/' /mnt/etc/mkinitcpio.conf
 		echo "" >> /mnt/install.sh
 		echo "mkinitcpio -P" >> /mnt/install.sh
 	fi
