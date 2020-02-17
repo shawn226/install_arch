@@ -113,7 +113,6 @@ make_mount(){
 	echo"Montage effectué:"
 	lsblk
 	sleep 2
-	genfstab -U /mnt >> /mnt/etc/fstab
 }
 
 #Fonction qui permet de créer une liste des "mirrors" en fonction du pays, ici c'est FR
@@ -124,7 +123,8 @@ set_mirrors(){
 
 generate_localegen(){
 	echo ""
-	while [[ -z $answer ]] || [[ $error = 1 ]]
+	local $error=1
+	while [[ $error = 1 ]]
 	do
 		read -p "Choisissez un langgage (fr / en): " answer
 		if [[ $answer != "fr" ]] && [[ $answer != "en" ]]
@@ -150,7 +150,8 @@ generate_localegen(){
 	then
 		echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf #on met le clavier en azerty
 	fi
-	locale-gen
+	echo "" >> /mnt/install.sh
+	echo "locale-gen" >> /mnt/install.sh
 	echo "LANG=$answer" > /mnt/etc/locale.conf
 }
 
@@ -242,12 +243,13 @@ set_mirrors
 
 #On passe au Chroot
 pacstrap /mnt base linux linux-firmware vim sudo dhcpcd
+genfstab -U /mnt >> /mnt/etc/fstab
 
 #On set à nouveau la timezone dans le chroot
 
 echo "ln -sf /usr/share/zoneinfo/$continent/$city /etc/localtime
 	
-	hwclock --systohc" >> /mnt/install.sh
+	hwclock --systohc" > /mnt/install.sh
 
 #On génère les différentes langues du systeme
 generate_localegen
@@ -264,7 +266,7 @@ config_user
 
 chmod u+x /mnt/install.sh
 
-arch-chroot /mnt ./install.sh
+# arch-chroot /mnt ./install.sh
 
 
 echo "Tout est bien là"
