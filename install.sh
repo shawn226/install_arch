@@ -123,7 +123,7 @@ set_mirrors(){
 
 generate_localegen(){
 	echo ""
-	local $error=1
+	local error=1
 	while [[ $error = 1 ]]
 	do
 		read -p "Choisissez un langgage (fr / en): " answer
@@ -148,7 +148,7 @@ generate_localegen(){
 	read -p "Mettre le clavier en AZERTY ? (oui /non)" keymap
 	if [[ $keymap = "oui" ]]
 	then
-		echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf #on met le clavier en azerty
+		echo "KEYMAP=fr" > /mnt/etc/vconsole.conf #on met le clavier en azerty
 	fi
 	echo "" >> /mnt/install.sh
 	echo "locale-gen" >> /mnt/install.sh
@@ -162,8 +162,8 @@ def_hosts(){
 	echo $name > /mnt/etc/hostname
 	
 	echo "127.0.0.1	localhost
-		::1	localhost
-		127.0.1.1	$name.localdomain	$name" > /mnt/etc/hosts
+::1	localhost
+127.0.1.1	$name.localdomain	$name" > /mnt/etc/hosts
 }
 
 make_initramfs(){
@@ -218,6 +218,27 @@ config_user(){
 }
 
 
+config_bootloader(){
+	local encrypt_uuid = blkid -o value -s UUID /dev/sda2
+	echo "" >> /mnt/install.sh
+	echo "bootctl --path=/boot install
+echo 'default arch
+timeout 5
+console-mode keep
+editor no
+' > /mnt/boot/loader/loader.conf
+	
+	
+echo 'title	Arch Linux
+linux	/vmlinuz-linux
+initrd	/initramfs-linux.img
+options cryptdevice=UUID=$encrypt_uuid:cryptroot root=/dev/mapper/cryptroot rw quiet
+' > /mnt/boot/entries/arch.conf
+bootctl --path=/boot update" >> /mnt/install.sh
+	
+}
+
+
 # define what is the boot => can change settings 
 what_kind_of_boot
 efi=$? # efi is set to 1 if it's true
@@ -264,12 +285,16 @@ config_root
 
 config_user
 
+config_bootloader
+
 chmod u+x /mnt/install.sh
 
-# arch-chroot /mnt ./install.sh
+arch-chroot /mnt ./install.sh
 
+umount -R /mnt
 
-echo "Tout est bien là"
+shutdown now
+
 
 
 
