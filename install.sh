@@ -177,7 +177,8 @@ make_initramfs(){
 
 config_root(){
 	echo ""
-	while [ -z $error_pwd ] || [ $error_pwd = 1 ]
+	local error_pwd=1
+	while [ $error_pwd = 1 ]
 	do
 		read -p "Choisir le mot de passe pour root : " root_pwd
 		read -p "Confirmez le mot de passe : " confirm
@@ -196,8 +197,8 @@ config_root(){
 config_user(){
 	echo ""
 	read -p "Choissez un nom pour le nouvel utilisateur : " username
-	
-	while [ -z $error_pwd ] || [ $error_pwd = 1 ]
+	local error_pwd=1
+	while [ $error_pwd = 1 ]
 	do
 		read -p "Choisir le mot de passe pour root : " user_pwd
 		read -p "Confirmez le mot de passe : " confirm
