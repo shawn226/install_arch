@@ -126,7 +126,7 @@ generate_localegen(){
 	local error=1
 	while [[ $error = 1 ]]
 	do
-		read -p "Choisissez un langgage (fr / en): " answer
+		read -p "Choisissez un langage (fr / en): " answer
 		if [[ $answer != "fr" ]] && [[ $answer != "en" ]]
 		then
 			echo "Veuillez choisir entre 'fr' et 'en'."
@@ -200,7 +200,7 @@ config_user(){
 	local error_pwd=1
 	while [ $error_pwd = 1 ]
 	do
-		read -p "Choisir le mot de passe pour root : " user_pwd
+		read -p "Choisir le mot de passe pour $username : " user_pwd
 		read -p "Confirmez le mot de passe : " confirm
 		if [[ $user_pwd != $confirm ]]
 		then
@@ -220,7 +220,7 @@ config_user(){
 
 
 config_bootloader(){
-	local encrypt_uuid = blkid -o value -s UUID /dev/sda2
+	local encrypt_uuid=$(blkid -o value -s UUID /dev/sda2)
 	echo "" >> /mnt/install.sh
 	echo "bootctl --path=/boot install
 echo 'default arch
@@ -292,9 +292,9 @@ chmod u+x /mnt/install.sh
 
 arch-chroot /mnt ./install.sh
 
-umount -R /mnt
+# umount -R /mnt
 
-shutdown now
+# shutdown now
 
 
 
