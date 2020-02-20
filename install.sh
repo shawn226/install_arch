@@ -227,15 +227,27 @@ echo 'default arch
 timeout 5
 console-mode keep
 editor no
-' > /boot/loader/loader.conf
+' > /boot/loader/loader.conf ">> /mnt/install.sh
 
-echo 'title	Arch Linux
+	echo "" >> /mnt/install.sh
+	if [[ $encrypted = 1 ]]
+	then
+		echo "echo 'title	Arch Linux
 linux	/vmlinuz-linux
 initrd	/initramfs-linux.img
 options cryptdevice=UUID=$encrypt_uuid:cryptroot root=/dev/mapper/cryptroot rw quiet
-' > /boot/loader/entries/arch.conf
+' > /boot/loader/entries/arch.conf" >> /mnt/install.sh
 
-bootctl --path=/boot update" >> /mnt/install.sh
+	else
+		echo "echo 'title	Arch Linux
+linux	/vmlinuz-linux
+initrd	/initramfs-linux.img
+options root=UUID=$encrypt_uuid rw quiet
+' > /boot/loader/entries/arch.conf" >> /mnt/install.sh
+	fi
+	
+	echo "" >> /mnt/install.sh
+	echo "bootctl --path=/boot update" >> /mnt/install.sh
 	
 }
 
