@@ -162,7 +162,7 @@ def_hosts(){
 	echo $name > /mnt/etc/hostname
 	
 	echo "127.0.0.1	localhost
-::1	localhost
+::1		localhost
 127.0.1.1	$name.localdomain	$name" > /mnt/etc/hosts
 }
 
@@ -271,7 +271,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 echo "ln -sf /usr/share/zoneinfo/$continent/$city /etc/localtime
 	
-	hwclock --systohc" > /mnt/install.sh
+hwclock --systohc" > /mnt/install.sh
 
 #On génère les différentes langues du systeme
 generate_localegen
