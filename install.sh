@@ -110,7 +110,7 @@ make_mount(){
 		mount /dev/sda1 /mnt/boot
 	fi
 	echo ""
-	echo"Montage effectué:"
+	echo "Montage effectué:"
 	lsblk
 	sleep 2
 }
@@ -151,8 +151,7 @@ generate_localegen(){
 		echo "KEYMAP=fr" > /mnt/etc/vconsole.conf #on met le clavier en azerty
 	fi
 	echo "" >> /mnt/install.sh
-	echo "locale-gen
-sleep 2" >> /mnt/install.sh
+	echo "locale-gen" >> /mnt/install.sh
 	echo "LANG=$answer" > /mnt/etc/locale.conf
 }
 
