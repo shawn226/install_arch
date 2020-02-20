@@ -3,9 +3,6 @@
 echo "Bienvenue dans le quide d'installation d'Arch Linux."
 echo "Veuillez suivre les instructions à l'écran."
 
-###VARIABLES GLOBALES
-message_wrong_timezone="\nVeuillez indiquer un nom présent dans la liste."
-
 ###FONCTIONS
 
 #Fonction qui permet de récupérer le mode de boot
@@ -72,7 +69,7 @@ set_time_by_timezone(){
 		
 		error=1
 		
-		while [[ -z $error ]] || [[ $error = 1 ]]
+		while [[ $error = 1 ]]
 		do
 			local error=1
 			read -p "Indiquez votre ville : " city
@@ -92,7 +89,7 @@ set_time_by_timezone(){
 make_partition(){
 	echo ""
 	echo "Début du partitionnement:"
-	if [[ $efi = 1 ]]
+	if [[ $efi = 0 ]]
 	then
 		(echo g; echo n; echo 1; echo ""; echo +1G; echo n; echo 3; echo ""; echo +2G; echo n; echo 2; echo ""; echo ""; echo t; echo 1;echo 1;echo t; echo 2; echo 24; echo t; echo 3; echo 19; echo w) | fdisk /dev/sda
 		echo ""
@@ -129,7 +126,7 @@ encrypt_partition(){
 
 #Fonction qui permet de monter les partitions
 make_mount(){
-	if [[ $efi = 1 ]]
+	if [[ $efi = 0 ]]
 	then
 		if [[ $encrypted = 1 ]]
 		then
