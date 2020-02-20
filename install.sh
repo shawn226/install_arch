@@ -89,14 +89,11 @@ set_time_by_timezone(){
 make_partition(){
 	echo ""
 	echo "Début du partitionnement:"
-	if [[ $efi = 0 ]]
+	if [[ $efi = 1 ]]
 	then
-		dd if=/dev/zero of=/dev/sda bs=512 count=1 && sync
-	#if [[ $efi = 1 ]]
-	#then
 		(echo g; echo n; echo 1; echo ""; echo +1G; echo n; echo 3; echo ""; echo +2G; echo n; echo 2; echo ""; echo ""; echo t; echo 1;echo 1;echo t; echo 2; echo 24; echo t; echo 3; echo 19; echo w) | fdisk /dev/sda
 		echo ""
-	#fi
+	fi
 	mkfs.fat -F32 /dev/sda1 # parition de boot en fat32
 	
 	# création du swap
@@ -129,8 +126,8 @@ encrypt_partition(){
 
 #Fonction qui permet de monter les partitions
 make_mount(){
-	#if [[ $efi = 1 ]]
-	#then
+	if [[ $efi = 1 ]]
+	then
 		if [[ $encrypted = 1 ]]
 		then
 			mount /dev/mapper/cryptroot /mnt
@@ -139,7 +136,7 @@ make_mount(){
 		fi
 		mkdir /mnt/boot
 		mount /dev/sda1 /mnt/boot
-	#fi
+	fi
 	echo ""
 	echo "Montage effectué:"
 	lsblk
