@@ -293,6 +293,9 @@ options root=UUID=$encrypt_uuid rw quiet
 what_kind_of_boot
 efi=$? # efi is set to 1 if it's true
 
+#On demande à l'utilisateur s'il veut configurer son reseau
+set_network()
+
 #define timezone
 set_time_by_timezone
 
