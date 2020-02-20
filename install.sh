@@ -25,12 +25,12 @@ set_network(){
 	ip address show
 	
 	read -p "Voulez vous configurez votre réseau ? (oui / non) " networking
-	if [[ $networking = "oui"]]
+	if [[ $networking = "oui" ]]
 	then
 		#on récupère l'interface car celle-ci varie d'un drvier / d'un OS à un autre			
 		interface=$(ip address show | grep "^[^,\d]:" | grep -v "lo" | cut -d " " -f 2 | cut -d : -f 1)
 		echo ""
-		read -p "Choisissez votre configuration [static or dhcp]." net_management
+		read -p "Choisissez votre configuration [static or dhcp] : " net_management
 		if [[ $net_management = "dhcp" ]]
 		then
 			ip link set $interface up
@@ -43,7 +43,7 @@ set_network(){
 			#J'active l'interface
 			ip link set $interface up
 			#je lis et j'ajoute l'IP sur l'interface
-			read -p "Écrivez l'addresse IP dans le format suivant : xxx.xxx.xxx.xxx/xx." IPaddress	
+			read -p "Écrivez l'addresse IP dans le format suivant : xxx.xxx.xxx.xxx/xx. : " IPaddress	
 			ip address add $IPaddress broadcast + dev $interface
 		fi
 	fi
@@ -295,7 +295,7 @@ what_kind_of_boot
 efi=$? # efi is set to 1 if it's true
 
 #On demande à l'utilisateur s'il veut configurer son reseau
-set_network()
+set_network
 
 #define timezone
 set_time_by_timezone
