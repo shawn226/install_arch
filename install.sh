@@ -24,8 +24,8 @@ set_network(){
 	echo ""
 	ip address show
 	
-	read -p "Voulez vous configurez votre réseau ? Y/N " networking
-	if [[ $networking = "Y"]] && [[ $networking = "y" ]]
+	read -p "Voulez vous configurez votre réseau ? (oui / non) " networking
+	if [[ $networking = "oui"]]
 	then
 		#on récupère l'interface car celle-ci varie d'un drvier / d'un OS à un autre			
 		interface=$(ip address show | grep "^[^,\d]:" | grep -v "lo" | cut -d " " -f 2 | cut -d : -f 1)
