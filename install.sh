@@ -31,21 +31,21 @@ set_network(){
 	interface=$(ip address show | grep "^[^,\d]:" | grep -v "lo" | cut -d " " -f 2 | cut -d : -f 1)
 	echo ""
 	read -p "Choisissez votre configuration [static or dhcp]." net_management
-		if [[$net_management = "dhcp"]]
-		then
-			ip link set $interface up
-			dhcpd
-		fi	
-			
-		if [[$net_management = "static"]]
-		then
-			echo "" 
-			#J'active l'interface
-			ip link set $interface up
-			#je lis et j'ajoute l'IP sur l'interface
-			read -p "Écrivez l'addresse IP dans le format suivant : xxx.xxx.xxx.xxx/xx." IPaddress	
-			ip address add $IPaddress broadcast + dev $interface
-		fi
+	if [[$net_management = "dhcp"]]
+	then
+		ip link set $interface up
+		dhcpd
+	fi	
+		
+	if [[$net_management = "static"]]
+	then
+		echo "" 
+		#J'active l'interface
+		ip link set $interface up
+		#je lis et j'ajoute l'IP sur l'interface
+		read -p "Écrivez l'addresse IP dans le format suivant : xxx.xxx.xxx.xxx/xx." IPaddress	
+		ip address add $IPaddress broadcast + dev $interface
+	fi
 }
 
 
