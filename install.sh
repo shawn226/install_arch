@@ -19,6 +19,36 @@ what_kind_of_boot()
     fi
 }
 
+#Fonction qui permet de configurer le reseau
+set_network(){
+	echo ""
+	ip address show
+	
+	read -p "Voulez vous configurez votre réseau ? Y/N " networking
+	if [[$networking = "Y"] && [$networking = "y"]]
+	then
+	#on récupère l'interface car celle-ci varie d'un drvier / d'un OS à un autre			
+	interface=$(ip address show | grep "^[^,\d]:" | grep -v "lo" | cut -d " " -f 2 | cut -d : -f 1)
+	echo ""
+	read -p "Choisissez votre configuration [static or dhcp]." net_management
+		if [[$net_management = "dhcp"]]
+		then
+			ip link set $interface up
+			dhcpd
+		fi	
+			
+		if [[$net_management = "static"]]
+		then
+			echo "" 
+			#J'active l'interface
+			ip link set $interface up
+			#je lis et j'ajoute l'IP sur l'interface
+			read -p "Écrivez l'addresse IP dans le format suivant : xxx.xxx.xxx.xxx/xx." IPaddress	
+			ip address add $IPaddress broadcast + dev $interface
+		fi
+}
+
+
 #Fonction qui permet de définir l'heure et la date
 set_time_by_timezone(){
 	local answer="no"
@@ -121,6 +151,8 @@ set_mirrors(){
 	sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist #On decommente les lignes dans le fichier 
 }
 
+
+#Fonction qui permet de générer les langues
 generate_localegen(){
 	echo ""
 	local error=1
@@ -145,7 +177,7 @@ generate_localegen(){
 		answer="en_US.UTF-8"
 		sed -i's/^#en_US.UTF-8/en_US.UTF-8 UTF-8/' /mnt/etc/locale.gen
 	fi
-	read -p "Mettre le clavier en AZERTY ? (oui /non)" keymap
+	read -p "Mettre le clavier en AZERTY ? (oui /non) : " keymap
 	if [[ $keymap = "oui" ]]
 	then
 		echo "KEYMAP=fr" > /mnt/etc/vconsole.conf #on met le clavier en azerty
@@ -155,6 +187,7 @@ generate_localegen(){
 	echo "LANG=$answer" > /mnt/etc/locale.conf
 }
 
+#Fonction qui définit le nom de la machine
 def_hosts(){
 	echo ""
 	read -p "Choissiez un nom pour la nouvelle machine : " name
@@ -166,6 +199,7 @@ def_hosts(){
 127.0.1.1	$name.localdomain	$name" > /mnt/etc/hosts
 }
 
+#Fonction qui permet de configurer le démarage si partition chiffrée
 make_initramfs(){
 	if [ $encrypted = 1 ]
 	then
@@ -175,6 +209,7 @@ make_initramfs(){
 	fi
 }
 
+#Fonction qui permet à l'utilisateur de choisir un mot de passe pour "root"
 config_root(){
 	echo ""
 	local error_pwd=1
@@ -194,6 +229,8 @@ config_root(){
 	echo "(echo $root_pwd; echo $root_pwd) | passwd" >> /mnt/install.sh
 }
 
+
+#Fonction qui permet de créer un utilisateur et lui affecter un mot de passe
 config_user(){
 	echo ""
 	read -p "Choissez un nom pour le nouvel utilisateur : " username
@@ -218,7 +255,7 @@ config_user(){
 	
 }
 
-
+#Fonction qui permet la configuration du boot loader
 config_bootloader(){
 	local encrypt_uuid=$(blkid -o value -s UUID /dev/sda2)
 	echo "" >> /mnt/install.sh
@@ -294,18 +331,24 @@ def_hosts
 #On configure les initramfs
 make_initramfs
 
-config_root
 
+#Configuration des utilisateurs
+config_root
 config_user
 
+
+#Configuration du bootloader
 config_bootloader
 
+
+#On rend le deuxième script executable
 chmod u+x /mnt/install.sh
 
+#On lance le deuxième script en chroot
 arch-chroot /mnt ./install.sh
 
+#on démonte pour éteindre la machine
 umount -R /mnt
-
 shutdown now
 
 
