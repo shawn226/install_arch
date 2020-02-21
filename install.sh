@@ -250,7 +250,7 @@ config_user(){
 	echo "(echo $root_pwd; echo $root_pwd) | passwd $username" >> /mnt/install.sh
 	echo "" >> /mnt/install.sh
 	echo "usermod -aG wheel,audio,video,optical,storage $username" >> /mnt/install.sh
-	sed -i's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /mnt/etc/sudoers
+	sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /mnt/etc/sudoers
 	
 }
 
@@ -322,7 +322,8 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 echo "ln -sf /usr/share/zoneinfo/$continent/$city /etc/localtime
 	
-hwclock --systohc" > /mnt/install.sh
+hwclock --systohc
+systemctl enable dhcpd" > /mnt/install.sh
 
 #On génère les différentes langues du systeme
 generate_localegen
