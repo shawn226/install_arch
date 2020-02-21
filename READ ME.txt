@@ -1,0 +1,10 @@
+Script d'installation et configuration d'Arch Linux:
+
+Attention ce script ne marche que pour les systèmes bootés en EFI !
+
+Pensez à donner les droits au fichier executable.
+
+Ce script bash permet la configuration totale de l'installation d'un Arch Linux, en proposant à l'utilisateur 
+plusieurs choix comme le fait de chiffrer ou non les partitions, la date, l'heure...
+
+
