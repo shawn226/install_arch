@@ -173,7 +173,7 @@ generate_localegen(){
 		sed -i 's/^#fr_FR.UTF-8/fr_FR.UTF-8 UTF-8/' /mnt/etc/locale.gen
 	else
 		answer="en_US.UTF-8"
-		sed -i's/^#en_US.UTF-8/en_US.UTF-8 UTF-8/' /mnt/etc/locale.gen
+		sed -i 's/^#en_US.UTF-8/en_US.UTF-8 UTF-8/' /mnt/etc/locale.gen
 	fi
 	read -p "Mettre le clavier en AZERTY ? (oui /non) : " keymap
 	if [[ $keymap = "oui" ]]
