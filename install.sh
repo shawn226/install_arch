@@ -250,6 +250,7 @@ config_user(){
 	echo "(echo $root_pwd; echo $root_pwd) | passwd $username" >> /mnt/install.sh
 	echo "" >> /mnt/install.sh
 	echo "usermod -aG wheel,audio,video,optical,storage $username" >> /mnt/install.sh
+	sed -i's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /mnt/etc/sudoers
 	
 }
 
