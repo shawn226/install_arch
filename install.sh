@@ -323,7 +323,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 echo "ln -sf /usr/share/zoneinfo/$continent/$city /etc/localtime
 	
 hwclock --systohc
-systemctl enable dhcpd" > /mnt/install.sh
+systemctl enable dhcpcd" > /mnt/install.sh
 
 #On génère les différentes langues du systeme
 generate_localegen
